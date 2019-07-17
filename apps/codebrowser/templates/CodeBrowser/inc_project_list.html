@@ -1,0 +1,29 @@
+{{use "ui.vue"}}
+{{use "ui.iview"}}
+<div id="app">
+    <i-table stripe :border=false :columns="tcolumns" :data="tdata"></i-table>
+</div>
+<script>
+var vm = new Vue({
+    el: '#app',
+    delimiters: ['{', '}'],
+    data: {
+        tcolumns:[
+            {
+                title:"Name",
+                key:"name",
+                render: function(h, params){
+                    return h('a',{attrs:{href:'{{=url_for("codebrowser.views.CodeBrowser.project")}}'+'/'+params.row.path}},
+                        params.row.name
+                    )
+                }
+            },
+            {title:"Date",key:"date_str"},
+            {title:"Size",key:"size"}
+        ],
+        tdata:{{=tdata_json}}
+    },
+    methods: {
+    }
+})
+</script>

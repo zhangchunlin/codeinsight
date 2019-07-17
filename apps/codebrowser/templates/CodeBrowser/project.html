@@ -1,0 +1,84 @@
+{{extend "CodeBrowser/layout.html"}}
+
+{{block content_header_title}}{{end content_header_title}}
+
+{{block content_main}}
+{{if path_is_file:}}
+
+{{use "ui.vue"}}
+{{use "ui.ace"}}
+<div id="app">
+    <div id="editor"></div>
+</div>
+<script>
+var modelist = ace.require("ace/ext/modelist")
+var vm = new Vue({
+    el: '#app',
+    delimiters: ['{', '}'],
+    data: {
+        srccode: "",
+        cm_option: {
+            tabSize: 4,
+            lineNumbers: true,
+            theme: "monokai"
+        },
+        editor: null
+    },
+    methods: {
+        init_app: function(){
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('codebrowser.views.CodeBrowser.api_filetext')}}",
+                data: {path:"{{=path}}"},
+                success: function (data) {
+                    vm.srccode = data
+                    setTimeout(function(){vm.init_editor()}, 0);
+                }
+            })
+        },
+        init_editor: function(){
+            var editor = ace.edit("editor")
+            vm.editor = editor
+
+            //editor.setTheme("ace/theme/tomorrow");
+            
+            //https://stackoverflow.com/questions/15903191/how-to-automatically-pick-a-mode-for-ace-editor-given-a-file-extension
+            editor.session.setMode(modelist.getModeForPath("{{=path}}").mode);
+            editor.setValue(vm.srccode);
+            vm.editor_resize()
+            editor.moveCursorTo(0,0)
+
+            //https://segmentfault.com/q/1010000007725271
+            window.onresize = function(){
+                vm.editor_resize()
+            }
+
+            //https://ace.c9.io/#nav=howto
+            editor.session.selection.on('changeCursor', function(e) {
+                console.log(e)
+                var c = vm.editor.selection.getCursor()
+                console.log(c)
+                console.log(vm.editor.selection.getWordRange(c.row,c.column))
+            });
+        },
+        editor_resize: function(){
+            var editor = vm.editor
+            //https://api.jquery.com/category/manipulation/style-properties/
+            var height = $('.content-wrapper').height()-60
+            $('#editor').css({
+                //fontSize:'20px',
+                height: height+"px"
+            })
+        }
+    },
+    mounted: function(){
+        this.init_app()
+    }
+})
+</script>
+{{else:}}
+
+{{include "CodeBrowser/inc_project_list.html"}}
+
+{{pass #path_is_file}}
+{{end content_main}}
