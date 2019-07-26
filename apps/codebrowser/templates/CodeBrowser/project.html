@@ -1,8 +1,36 @@
 {{extend "CodeBrowser/layout.html"}}
 
-{{block content_header_title}}{{end content_header_title}}
+{{block content_header_title}}
+{{use "ui.vue"}}
+{{use "ui.iview"}}
+<div id="apptop">
+<ol class="breadcrumb">
+    <li v-for="item in path_items" v-bind:class="{active:item.active}">
+        <a :href=get_link(item.link) v-if=!item.active>{item.name}</a>
+        <span v-if=item.active>{item.name}</span>
+    </li>
+</ol>
+</div>
+<script>
+var vm = new Vue({
+    el: '#apptop',
+    delimiters: ['{', '}'],
+    data: {path_items:{{=path_items_json}}},
+    methods:{
+        get_link: function(rlink){
+            var url = "{{=url_for('codebrowser.views.CodeBrowser.project')}}"
+            if (rlink && rlink[0]!="/") {
+                url += "/"
+            }
+            return url+rlink
+        }
+    }
+})
+</script>
+{{end content_header_title}}
 
 {{block content_main}}
+
 {{if path_is_file:}}
 
 {{use "ui.vue"}}

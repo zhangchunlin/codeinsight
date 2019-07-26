@@ -1,0 +1,26 @@
+{{if hasattr(request, 'user') and request.user:}}
+<div class="navbar-custom-menu">
+  <ul class="nav navbar-nav">
+    <li class="dropdown user user-menu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <img src="{{=functions.get_user_image(request.user)}}"  class="user-image"/>
+        <span class="hidden-xs">{{=request.user}}</span>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="user-header">
+            <img src="{{=functions.get_user_image(request.user)}}"  class="img-circle"/>
+            <p>{{=request.user}}</p>
+        </li>
+        <li class="user-footer">
+          <div class="pull-left">
+            <a href="{{=url_for('uliweb_lapps.auth.user_admin.views.UserView.view')}}" class="btn btn-default btn-flat">Profile</a>
+          </div>
+          <div class="pull-right">
+            <a href="{{=url_for('uliweb_apps.login.views.logout')}}" class="btn btn-default btn-flat">Log out</a>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+{{pass #request.user}}

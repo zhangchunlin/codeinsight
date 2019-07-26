@@ -1,0 +1,80 @@
+{{extend "site/layout1.html"}}
+
+{{block body_class}}skin-blue-light login-page{{end}}
+
+{{block title}}Login{{end title}}
+
+{{block pagecss}}
+{{link "login/login.css"}}
+{{end}}
+
+{{block topbar}}
+{{end}}
+
+{{block content}}
+
+<div class="login-box">
+  <div class="login-box-body">
+    <div class="login-logo">
+      <a href="{{<< settings.LAYOUT.logo_url}}">{{<< settings.LAYOUT.logo_lg}}</a>
+    </div>
+    <form action="{{=url_for('uliweb_apps.login.views.login')}}" method="post" id="login-form">
+      <input type="hidden" name="next" value="{{= next if next else '/'}}"></input>
+      <div class="form-group has-feedback">
+        <input id="field_username" name="username" class="form-control" required placeholder="Lenovo ITCode">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" class="form-control" name="password" required placeholder="{{=_('password')}}">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="checkbox">
+            <label>
+              <input id="field_rememberme" name="rememberme" type="checkbox">
+              {{=_('Remember Me')}}
+            </label>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          {{if settings.LOGIN.register:}}
+            <a href="{{=url_for('uliweb_apps.login.views.register')}}" class="btn btn-link">{{=_('Register New User')}}</a>
+          {{pass}}
+        </div>
+      </div>
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-xs-12">
+          <button type="submit" class="btn btn-primary btn-block btn-flat">{{=_('Sign In')}}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+
+<script>
+  $(function(){
+    validate_submit('#login-form');
+    $('#login-form').on('success.form', function(e){
+      console.log('here');
+    });
+  });
+</script>
+{{end}}
+
+{{block header_custom_menu}}
+{{end}}
+
+{{block footer}}
+<footer class="main-footer">
+    <div class="container">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.0
+    </div>
+    <strong>Copyright © 2018 Lenovo. </strong>
+    </div>
+</footer>
+{{end footer}}

@@ -25,16 +25,21 @@ class CodeBrowser(object):
         path = os.path.normpath(path)
         path_is_file = os.path.isfile(path)
         
+        rpath = os.path.normpath(os.path.relpath(path,project_root))
+        path_items = self._get_path_items(rpath)
+
         if path_is_file:
-            rpath = os.path.normpath(os.path.relpath(path,project_root))
+            
             return {
                 "path_is_file":path_is_file,
-                "path": rpath
+                "path": rpath,
+                "path_items_json": json_dumps(path_items)
             }
         else:
             return {
                 "path_is_file":path_is_file,
-                "tdata_json":json_dumps(self._get_tdata(path))
+                "tdata_json":json_dumps(self._get_tdata(path)),
+                "path_items_json": json_dumps(path_items)
             }
     def _get_tdata(self,path):
         tdata = []
@@ -54,6 +59,15 @@ class CodeBrowser(object):
                 tdata.append(d)
         tdata.sort(key=lambda i:i["name"])
         return tdata
+
+    def _get_path_items(self,rpath):
+        path_items = [{"name":"root","link":"/"}]
+        l = []
+        for i in rpath.split(os.sep):
+            l.append(i)
+            path_items.append({"name":i,"link":os.sep.join(l)})
+        path_items[-1]["active"] = True
+        return path_items
 
     def api_filetext(self):
         path = request.values.get("path")
