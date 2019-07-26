@@ -11,13 +11,9 @@ class CodeBrowser(object):
     def __begin__(self):
         self.project_root = os.path.abspath(settings.CODEINSIGHT.project_root)
 
-    @expose('')
-    def index(self):
-        return {"tdata_json":json_dumps(self._get_tdata(self.project_root))}
-
     @expose('p',defaults={"path":None})
     @expose('p/<path:path>')
-    def project(self,path):
+    def project(self,path=None):
         project_root = self.project_root
         is_root = False
         if path == None:

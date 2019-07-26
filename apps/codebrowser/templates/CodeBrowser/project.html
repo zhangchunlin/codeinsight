@@ -3,6 +3,7 @@
 {{block title}}Codeinsight: {{=path}}{{end title}}
 
 {{block content_header_title}}
+{{if path:}}
 {{use "ui.vue"}}
 {{use "ui.iview"}}
 <div id="apptop" class='box'>
@@ -29,6 +30,7 @@ var vm = new Vue({
     }
 })
 </script>
+{{pass #if path}}
 {{end content_header_title}}
 
 {{block content_main}}
@@ -108,7 +110,40 @@ var vm = new Vue({
 </script>
 {{else:}}
 
-{{include "CodeBrowser/inc_project_list.html"}}
+{{use "ui.vue"}}
+{{use "ui.iview"}}
+<style>
+.ivu-table td, .ivu-table th {
+    height: 32px;
+}
+</style>
+<div id="app" class='box'>
+    <i-table stripe :border=false :columns="tcolumns" :data="tdata"></i-table>
+</div>
+<script>
+var vm = new Vue({
+    el: '#app',
+    delimiters: ['{', '}'],
+    data: {
+        tcolumns:[
+            {
+                title:"Name",
+                key:"name",
+                render: function(h, params){
+                    return h('a',{attrs:{href:'{{=url_for("codebrowser.views.CodeBrowser.project")}}'+'/'+params.row.path}},
+                        params.row.name
+                    )
+                }
+            },
+            {title:"Date",key:"date_str"},
+            {title:"Size",key:"size"}
+        ],
+        tdata:{{=tdata_json}}
+    },
+    methods: {
+    }
+})
+</script>
 
 {{pass #path_is_file}}
 {{end content_main}}
