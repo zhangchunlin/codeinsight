@@ -61,9 +61,11 @@ class CodeBrowser(object):
         return tdata
 
     def _get_path_items(self,rpath):
-        path_items = [{"name":"root","link":"/"}]
+        path_items = [{"name":"projects","link":"/"}]
         l = []
         for i in rpath.split(os.sep):
+            if i==".":
+                break
             l.append(i)
             path_items.append({"name":i,"link":os.sep.join(l)})
         path_items[-1]["active"] = True
