@@ -1,6 +1,11 @@
 {{use "ui.vue"}}
 {{use "ui.iview"}}
-<div id="app">
+<style>
+.ivu-table td, .ivu-table th {
+    height: 32px;
+}
+</style>
+<div id="app" class='box'>
     <i-table stripe :border=false :columns="tcolumns" :data="tdata"></i-table>
 </div>
 <script>

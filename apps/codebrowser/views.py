@@ -28,6 +28,8 @@ class CodeBrowser(object):
         path_is_file = os.path.isfile(path)
         
         rpath = os.path.normpath(os.path.relpath(path,project_root))
+        if rpath == ".":
+            rpath = ""
         path_items = self._get_path_items(rpath)
 
         if path_is_file:
@@ -40,6 +42,7 @@ class CodeBrowser(object):
         else:
             return {
                 "path_is_file":path_is_file,
+                "path": rpath,
                 "tdata_json":json_dumps(self._get_tdata(path,is_root)),
                 "path_items_json": json_dumps(path_items)
             }
@@ -71,7 +74,7 @@ class CodeBrowser(object):
         path_items = [{"name":"projects","link":"/"}]
         l = []
         for i in rpath.split(os.sep):
-            if i==".":
+            if i=="":
                 break
             l.append(i)
             path_items.append({"name":i,"link":os.sep.join(l)})

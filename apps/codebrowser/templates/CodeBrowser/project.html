@@ -1,9 +1,11 @@
 {{extend "CodeBrowser/layout.html"}}
 
+{{block title}}Codeinsight: {{=path}}{{end title}}
+
 {{block content_header_title}}
 {{use "ui.vue"}}
 {{use "ui.iview"}}
-<div id="apptop">
+<div id="apptop" class='box'>
 <ol class="breadcrumb">
     <li v-for="item in path_items" v-bind:class="{active:item.active}">
         <a :href=get_link(item.link) v-if=!item.active>{item.name}</a>
@@ -35,7 +37,7 @@ var vm = new Vue({
 
 {{use "ui.vue"}}
 {{use "ui.ace"}}
-<div id="app">
+<div id="app" class='box'>
     <div id="editor"></div>
 </div>
 <script>
@@ -92,7 +94,7 @@ var vm = new Vue({
         editor_resize: function(){
             var editor = vm.editor
             //https://api.jquery.com/category/manipulation/style-properties/
-            var height = $('.content-wrapper').height()-60
+            var height = $('.content-wrapper').height()-110
             $('#editor').css({
                 //fontSize:'20px',
                 height: height+"px"
