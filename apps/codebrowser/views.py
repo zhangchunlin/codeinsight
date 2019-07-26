@@ -19,8 +19,10 @@ class CodeBrowser(object):
     @expose('p/<path:path>')
     def project(self,path):
         project_root = self.project_root
+        is_root = False
         if path == None:
             path = project_root
+            is_root = True
         path = os.path.join(project_root,path)
         path = os.path.normpath(path)
         path_is_file = os.path.isfile(path)
@@ -38,10 +40,10 @@ class CodeBrowser(object):
         else:
             return {
                 "path_is_file":path_is_file,
-                "tdata_json":json_dumps(self._get_tdata(path)),
+                "tdata_json":json_dumps(self._get_tdata(path,is_root)),
                 "path_items_json": json_dumps(path_items)
             }
-    def _get_tdata(self,path):
+    def _get_tdata(self,path,is_root=False):
         tdata = []
         ignore_set = set(settings.CODEINSIGHT.entry_name_ignore)
         with os.scandir(path) as entries:
@@ -49,7 +51,12 @@ class CodeBrowser(object):
                 if entry.name.lower() in ignore_set:
                     continue
                 is_file = entry.is_file()
-                name = ("📄 " if is_file else "📁 ") + entry.name
+                if is_root:
+                    if is_file:
+                        break
+                    name = "🗄️ " + entry.name
+                else:
+                    name = ("📄 " if is_file else "📁 ") + entry.name
                 st = entry.stat()
                 size = st.st_size if is_file else ""
                 date_str = time.strftime("%Y-%m-%d",time.localtime(st.st_mtime))
