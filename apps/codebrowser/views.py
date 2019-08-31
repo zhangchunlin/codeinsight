@@ -42,6 +42,7 @@ class CodeBrowser(object):
                 "tdata_json":json_dumps(self._get_tdata(path,is_root)),
                 "path_items_json": json_dumps(path_items)
             }
+
     def _get_tdata(self,path,is_root=False):
         tdata = []
         ignore_set = set(settings.CODEINSIGHT.entry_name_ignore)
@@ -61,13 +62,26 @@ class CodeBrowser(object):
                 date_str = time.strftime("%Y-%m-%d",time.localtime(st.st_mtime))
                 epath = os.path.relpath(entry.path,self.project_root)
                 epath = os.path.normpath(epath)
-                d = {"name":name,"date":st.st_mtime,"date_str":date_str,"size":size,"path":epath}
+                d = {"name":name,"date":st.st_mtime,"date_str":date_str,"size":size,"size_str":self._format_bytes(size),"path":epath}
                 tdata.append(d)
         tdata.sort(key=lambda i:i["name"])
         return tdata
 
+    def _format_bytes(self,size):
+        if not size:
+            return ""
+        power = 1024
+        n = 0
+        power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
+        while size > power:
+            size /= power
+            n += 1
+        if n==0:
+            return "%s bytes"%size
+        return "%.1f %s bytes"%(size, power_labels[n])
+
     def _get_path_items(self,rpath):
-        path_items = [{"name":"projects","link":"/"}]
+        path_items = [{"name":"🏠","link":"/"}]
         l = []
         for i in rpath.split(os.sep):
             if i=="":
